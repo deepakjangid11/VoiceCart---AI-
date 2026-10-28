@@ -1,5 +1,5 @@
-from pathlib import Path
 import csv
+from pathlib import Path
 
 RAW_DATA_DIR = Path("data/raw")
 

@@ -6,7 +6,6 @@ from e_commerce_voice_bot.database import get_db_connection
 from e_commerce_voice_bot.exception import CustomException
 from e_commerce_voice_bot.logger import get_logger
 
-
 logger = get_logger(__name__)
 
 PROCESSED_DATA_DIR = Path("data/processed")

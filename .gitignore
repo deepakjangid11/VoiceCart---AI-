@@ -24,3 +24,5 @@ data/processed/
 
 # Large raw datasets
 data/raw/amazon_products.csv
+data/vector_store/
+data/vector_store_test/
