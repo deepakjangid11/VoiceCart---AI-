@@ -1,0 +1,26 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+
+# Environment
+.env
+
+# Logs
+logs/
+
+# Test / tooling
+.pytest_cache/
+.ruff_cache/
+
+# Processed data
+data/processed/
+
+# Large raw datasets
+data/raw/amazon_products.csv

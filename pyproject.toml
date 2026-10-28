@@ -1,0 +1,25 @@
+[project]
+name = "e-commerce-voice-bot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "c language", email = "dj404729@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "mysql-connector-python>=26.10.0",
+    "python-dotenv>=1.2.4",
+]
+
+[project.scripts]
+e-commerce-voice-bot = "e_commerce_voice_bot:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
