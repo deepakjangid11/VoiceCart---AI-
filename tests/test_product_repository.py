@@ -1,13 +1,9 @@
-from e_commerce_voice_bot.product_repository import (
-    search_products,
-    get_product_by_asin,
-    get_products_by_category
-)
+
 from e_commerce_voice_bot.product_repository import (
     search_products,
     get_product_by_asin,
     get_products_by_category,
-    search_products_advanced
+    search_products_advanced,
 )
 
 
@@ -28,7 +24,6 @@ def test_get_product_by_asin():
         return
 
     asin = products[0]["asin"]
-
     product = get_product_by_asin(asin)
 
     assert product is not None
@@ -40,12 +35,13 @@ def test_get_products_by_category():
 
     assert isinstance(products, list)
 
+
 def test_search_products_advanced():
     products = search_products_advanced(
         search_term="iphone",
         max_price=1000,
         min_rating=4,
-        limit=5
+        limit=5,
     )
 
     assert isinstance(products, list)

@@ -1,3 +1,4 @@
+
 import sys
 
 from e_commerce_voice_bot.database import get_db_connection
@@ -38,27 +39,19 @@ def search_products(search_term: str, limit: int = 10):
         """
 
         search_pattern = f"%{search_term}%"
-
-        cursor.execute(
-            query,
-            (search_pattern, limit)
-        )
-
+        cursor.execute(query, (search_pattern, limit))
         products = cursor.fetchall()
 
         logger.info(
             "Product search completed | term=%s | results=%d",
             search_term,
-            len(products)
+            len(products),
         )
 
         return products
 
     except Exception as e:
-        logger.exception(
-            "Product search failed | term=%s",
-            search_term
-        )
+        logger.exception("Product search failed | term=%s", search_term)
         raise CustomException(e, sys)
 
     finally:
@@ -92,22 +85,18 @@ def get_product_by_asin(asin: str):
         """
 
         cursor.execute(query, (asin,))
-
         product = cursor.fetchone()
 
         logger.info(
             "Product lookup completed | asin=%s | found=%s",
             asin,
-            product is not None
+            product is not None,
         )
 
         return product
 
     except Exception as e:
-        logger.exception(
-            "Product lookup failed | asin=%s",
-            asin
-        )
+        logger.exception("Product lookup failed | asin=%s", asin)
         raise CustomException(e, sys)
 
     finally:
@@ -117,7 +106,7 @@ def get_product_by_asin(asin: str):
 
 def get_products_by_category(
     category_name: str,
-    limit: int = 10
+    limit: int = 10,
 ):
     connection = None
 
@@ -147,18 +136,13 @@ def get_products_by_category(
         """
 
         category_pattern = f"%{category_name}%"
-
-        cursor.execute(
-            query,
-            (category_pattern, limit)
-        )
-
+        cursor.execute(query, (category_pattern, limit))
         products = cursor.fetchall()
 
         logger.info(
             "Category search completed | category=%s | results=%d",
             category_name,
-            len(products)
+            len(products),
         )
 
         return products
@@ -166,13 +150,14 @@ def get_products_by_category(
     except Exception as e:
         logger.exception(
             "Category search failed | category=%s",
-            category_name
+            category_name,
         )
         raise CustomException(e, sys)
 
     finally:
         if connection:
             connection.close()
+
 
 def search_products_advanced(
     search_term=None,
@@ -182,7 +167,7 @@ def search_products_advanced(
     category_name=None,
     best_seller_only=False,
     sort_by="relevance",
-    limit=10
+    limit=10,
 ):
     connection = None
 
@@ -193,9 +178,16 @@ def search_products_advanced(
         conditions = []
         parameters = []
 
-        if search_term:
+        if (
+            min_price is not None
+            or max_price is not None
+            or sort_by in {"price_low", "price_high"}
+        ):
+            conditions.append("price > 0")
+
+        if search_term and search_term.strip():
             conditions.append("title LIKE %s")
-            parameters.append(f"%{search_term}%")
+            parameters.append(f"%{search_term.strip()}%")
 
         if min_price is not None:
             conditions.append("price >= %s")
@@ -209,9 +201,9 @@ def search_products_advanced(
             conditions.append("stars >= %s")
             parameters.append(min_rating)
 
-        if category_name:
+        if category_name and category_name.strip():
             conditions.append("category_name LIKE %s")
-            parameters.append(f"%{category_name}%")
+            parameters.append(f"%{category_name.strip()}%")
 
         if best_seller_only:
             conditions.append("is_best_seller = TRUE")
@@ -226,12 +218,12 @@ def search_products_advanced(
             "price_high": "price DESC",
             "rating": "stars DESC, reviews DESC",
             "reviews": "reviews DESC",
-            "relevance": "is_best_seller DESC, stars DESC, reviews DESC"
+            "relevance": "is_best_seller DESC, stars DESC, reviews DESC",
         }
 
         order_clause = sort_options.get(
             sort_by,
-            sort_options["relevance"]
+            sort_options["relevance"],
         )
 
         query = f"""
@@ -254,21 +246,20 @@ def search_products_advanced(
         """
 
         parameters.append(limit)
-
         cursor.execute(query, tuple(parameters))
-
         products = cursor.fetchall()
 
         logger.info(
             "Advanced product search completed | "
             "term=%s | min_price=%s | max_price=%s | "
-            "min_rating=%s | category=%s | results=%d",
+            "min_rating=%s | category=%s | sort_by=%s | results=%d",
             search_term,
             min_price,
             max_price,
             min_rating,
             category_name,
-            len(products)
+            sort_by,
+            len(products),
         )
 
         return products
